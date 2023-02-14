@@ -1,15 +1,20 @@
-import { Button, Grid, MenuItem, Select } from "@mui/material";
+import {
+  Button,
+  Grid,
+  MenuItem,
+  Select
+} from "@mui/material";
 import { Loader } from "google-maps";
 import
   React,
 {
-  FormEvent,
+  FormEvent, FunctionComponent,
   useCallback,
   useEffect,
   useRef,
   useState
-}
-  from 'react';
+} from 'react';
+import { sample, shuffle } from "lodash";
 import { makeCarIcon, makeMarkerIcon, Map } from "../util/map";
 import { Route } from "../util/models";
 import { getCurrentPosition } from "../util/geolocations";
@@ -17,7 +22,21 @@ import { getCurrentPosition } from "../util/geolocations";
 const API_URL = process.env.REACT_APP_API_URL as string;
 const googleMapsLoader = new Loader(process.env.REACT_APP_GOOGLE_API_KEY);
 
-export function Mapping() {
+const colors = [
+  "#b71c1c",
+  "#4a148c",
+  "#2e7d32",
+  "#e65100",
+  "#2962ff",
+  "#c2185b",
+  "#FFCD00",
+  "#3e2723",
+  "#03a9f4",
+  "#827717",
+];
+
+
+export function Mapping () {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [routeIdSelected, setRouteIdSelected] = useState<string>("");
   const mapRef = useRef<Map>();
@@ -45,14 +64,18 @@ export function Mapping() {
   const startRoute = useCallback((event: FormEvent) => {
     event.preventDefault();
     const route = routes.find(route => route._id === routeIdSelected);
+
+    const color = sample(shuffle(colors)) ?? "#000";
+
+    console.log(color)
     mapRef.current?.addRoute(routeIdSelected, {
       currentMarkerOptions: {
         position: route?.startPosition,
-        icon: makeCarIcon("#000"),
+        icon: makeCarIcon(color),
       },
       endMarkerOptions: {
         position: route?.endPosition,
-        icon: makeMarkerIcon("#454545"),
+        icon: makeMarkerIcon(color),
       }
 
     });
@@ -61,7 +84,7 @@ export function Mapping() {
   return (
     <Grid container style={{ width: '100%', height: '100%' }}>
       <Grid item xs={12} sm={3}>
-        <form onSubmit={startRoute}>
+        <form onSubmit={startRoute} >
           <Select
             fullWidth
             displayEmpty
