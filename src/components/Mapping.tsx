@@ -4,6 +4,7 @@ import {
   MenuItem,
   Select
 } from "@mui/material";
+import { makeStyles } from '@mui/styles';
 import { Loader } from "google-maps";
 import
   React,
@@ -18,6 +19,7 @@ import { sample, shuffle } from "lodash";
 import { makeCarIcon, makeMarkerIcon, Map } from "../util/map";
 import { Route } from "../util/models";
 import { getCurrentPosition } from "../util/geolocations";
+import {Navibar} from "./Navibar";
 
 const API_URL = process.env.REACT_APP_API_URL as string;
 const googleMapsLoader = new Loader(process.env.REACT_APP_GOOGLE_API_KEY);
@@ -35,8 +37,26 @@ const colors = [
   "#827717",
 ];
 
+const useStyles = makeStyles({
+  root: {
+    width: "100%",
+    height: "100%",
+  },
+  form: {
+    margin: "16px",
+  },
+  btnSubmitWrapper: {
+    textAlign: "center",
+    marginTop: "8px",
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+});
 
 export function Mapping () {
+  const classes = useStyles();
   const [routes, setRoutes] = useState<Route[]>([]);
   const [routeIdSelected, setRouteIdSelected] = useState<string>("");
   const mapRef = useRef<Map>();
@@ -65,9 +85,8 @@ export function Mapping () {
     event.preventDefault();
     const route = routes.find(route => route._id === routeIdSelected);
 
-    const color = sample(shuffle(colors)) ?? "#000";
+    const color = sample(shuffle(colors)) as string;
 
-    console.log(color)
     mapRef.current?.addRoute(routeIdSelected, {
       currentMarkerOptions: {
         position: route?.startPosition,
@@ -82,14 +101,16 @@ export function Mapping () {
   }, [routeIdSelected, routes]);
 
   return (
-    <Grid container style={{ width: '100%', height: '100%' }}>
+    <Grid container className={classes.root}>
       <Grid item xs={12} sm={3}>
-        <form onSubmit={startRoute} >
+        <Navibar />
+        <form onSubmit={startRoute} className={classes.form}>
           <Select
             fullWidth
             displayEmpty
             value={routeIdSelected}
             onChange={(event) => setRouteIdSelected(event.target.value + "")}
+            style={{ color: "#FFCD00"}}
           >
             <MenuItem value="">
               <em>Selecionar uma corrida</em>
@@ -103,17 +124,19 @@ export function Mapping () {
             }
 
           </Select>
-          <Button
-            type="submit"
-            color="primary"
-            variant="contained"
-          >
-            Iniciar uma corrida
-          </Button>
+          <div className={classes.btnSubmitWrapper}>
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+            >
+              Iniciar uma corrida
+            </Button>
+          </div>
         </form>
       </Grid>
       <Grid item xs={12} sm={9}>
-        <div id="map" style={{ width: '100%', height: '100%' }}></div>
+        <div id="map" className={classes.map} />
       </Grid>
     </Grid>
   );

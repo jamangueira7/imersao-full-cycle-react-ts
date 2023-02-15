@@ -1,4 +1,5 @@
-import {createMuiTheme, PaletteOptions} from "@mui/material";
+import { createTheme } from "@mui/material";
+import { PaletteOptions } from "@mui/material/styles/createPalette";
 
 const palette: PaletteOptions = {
   primary: {
@@ -10,7 +11,7 @@ const palette: PaletteOptions = {
   },
 };
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette,
 });
 

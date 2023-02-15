@@ -1,5 +1,5 @@
 import React from 'react';
-import {CssBaseline, ThemeProvider} from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Mapping } from "./components/Mapping";
 import theme from "./theme";
 
